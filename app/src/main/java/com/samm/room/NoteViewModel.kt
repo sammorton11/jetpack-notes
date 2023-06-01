@@ -14,9 +14,7 @@ class NoteViewModel(private val repository: Repository): ViewModel() {
     val _state = mutableStateOf(NoteListScreenState())
     val state: State<NoteListScreenState> = _state
 
-    val _id = mutableStateOf<Long>(0L)
-    val id: State<Long> = _id
-
+    @Suppress("UNCHECKED_CAST")
     class Factory(private val repo: Repository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return NoteViewModel(repo) as T
@@ -24,7 +22,7 @@ class NoteViewModel(private val repository: Repository): ViewModel() {
     }
 
     private fun getAllNotes(): Flow<List<Notes>> {
-        return repository.getDao().getAllNotes()
+        return repository.getAllNotes()
     }
 
     fun notesList() = viewModelScope.launch(Dispatchers.IO) {
