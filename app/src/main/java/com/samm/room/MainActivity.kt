@@ -35,6 +35,10 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import com.samm.room.data.NoteDatabase
+import com.samm.room.data.RepositoryImpl
+import com.samm.room.presentation.AppNavigation
+import com.samm.room.presentation.viewmodel.NoteViewModel
 import com.samm.room.ui.theme.RoomTheme
 
 /*
