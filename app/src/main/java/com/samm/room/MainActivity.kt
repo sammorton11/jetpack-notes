@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +52,7 @@ import com.samm.room.ui.theme.RoomTheme
  */
 
 class MainActivity : ComponentActivity() {
+
     @RequiresApi(Build.VERSION_CODES.O)
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -63,13 +65,14 @@ class MainActivity : ComponentActivity() {
         val viewModel = ViewModelProvider(this, factory)[NoteViewModel::class.java]
         viewModel.notesList()
 
+
         setContent {
             RoomTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
+                    val context = LocalContext.current.applicationContext
                     Scaffold(
                         topBar = {
                             // Move this to its own file

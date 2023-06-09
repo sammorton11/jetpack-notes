@@ -5,11 +5,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.samm.room.domain.NotificationScheduler
 import com.samm.room.presentation.screen.CreateNoteScreen
 import com.samm.room.presentation.screen.DetailsScreen
 import com.samm.room.presentation.screen.NoteListScreen
@@ -19,6 +21,7 @@ import com.samm.room.presentation.viewmodel.NoteViewModel
 @Composable
 fun AppNavigation(viewModel: NoteViewModel) {
     val navController = rememberNavController()
+    val notificationWorker = NotificationScheduler(LocalContext.current.applicationContext)
 
     NavHost(navController = navController, startDestination = "notes-screen") {
 
@@ -32,7 +35,11 @@ fun AppNavigation(viewModel: NoteViewModel) {
         }
 
         composable("create-note-screen") {
-            CreateNoteScreen(insert = viewModel::insert, navController = navController)
+            CreateNoteScreen(
+                insert = viewModel::insert,
+                scheduleNotification = notificationWorker::scheduleNotification,
+                navController = navController
+            )
         }
 
         composable("details-screen/{noteId}/{title}/{details}",
