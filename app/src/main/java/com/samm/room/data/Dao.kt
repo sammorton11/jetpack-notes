@@ -19,7 +19,7 @@ interface Dao {
 
     @Query("DELETE FROM notes")
     fun deleteAllNotes()
-
+    
     @Insert
     suspend fun insert(note: Notes)
 

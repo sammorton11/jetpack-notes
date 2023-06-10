@@ -17,4 +17,5 @@ data class Notes(
     var note: String,
     @ColumnInfo("date")
     var date: String,
+    var isChecked: Boolean = false
 ) : Parcelable

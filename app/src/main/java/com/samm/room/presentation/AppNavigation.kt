@@ -5,13 +5,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.samm.room.domain.NotificationScheduler
 import com.samm.room.presentation.screen.CreateNoteScreen
 import com.samm.room.presentation.screen.DetailsScreen
 import com.samm.room.presentation.screen.NoteListScreen
@@ -19,25 +17,33 @@ import com.samm.room.presentation.viewmodel.NoteViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AppNavigation(viewModel: NoteViewModel) {
+fun AppNavigation(
+    viewModel: NoteViewModel,
+    scheduleNotification: (noteId: Long, title: String, note: String) -> Unit
+) {
     val navController = rememberNavController()
-    val notificationWorker = NotificationScheduler(LocalContext.current.applicationContext)
 
-    NavHost(navController = navController, startDestination = "notes-screen") {
+    NavHost(
+        navController = navController,
+        startDestination = "notes-screen"
+    ) {
 
         composable("notes-screen") {
-            val list = viewModel.state.value.list
+            val list = viewModel.state.collectAsState().value.list
+            val selectedNotes = viewModel.selectedNotes
+
             NoteListScreen(
+                selectedNotes = selectedNotes,
+                toggleNoteSelection = viewModel::toggleNoteSelection,
                 navController = navController,
-                list = list,
-                delete = viewModel::delete
+                list = list
             )
         }
 
         composable("create-note-screen") {
             CreateNoteScreen(
                 insert = viewModel::insert,
-                scheduleNotification = notificationWorker::scheduleNotification,
+                scheduleNotification = scheduleNotification,
                 navController = navController
             )
         }
