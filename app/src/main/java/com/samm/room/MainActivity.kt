@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +37,11 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import com.samm.room.data.NoteDatabase
+import com.samm.room.data.RepositoryImpl
+import com.samm.room.domain.NotificationScheduler
+import com.samm.room.presentation.AppNavigation
+import com.samm.room.presentation.viewmodel.NoteViewModel
 import com.samm.room.ui.theme.RoomTheme
 
 /*
@@ -58,6 +65,8 @@ class MainActivity : ComponentActivity() {
         val factory = NoteViewModel.Factory(repository)
         val viewModel = ViewModelProvider(this, factory)[NoteViewModel::class.java]
         viewModel.notesList()
+        val notificationWorker = NotificationScheduler(this)
+
 
         setContent {
             RoomTheme {
@@ -65,6 +74,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    var deleteSelectedAlertExpanded by remember { mutableStateOf(false) }
+                    var deleteAllAlertExpanded by remember { mutableStateOf(false) }
 
                     Scaffold(
                         topBar = {
@@ -102,11 +113,24 @@ class MainActivity : ComponentActivity() {
                                         offset = DpOffset(0.dp, 12.dp),
                                         content = {
                                             DropdownMenuItem(
-                                                text = { Text(text = "Clear list") },
+                                                text = { Text(text = "Delete All") },
                                                 modifier = Modifier
-                                                    .semantics { testTag = "Clear list button" },
+                                                    .semantics { testTag = "Delete All button" },
                                                 onClick = {
-                                                    viewModel.deleteAllNotes()
+                                                    deleteAllAlertExpanded = !deleteAllAlertExpanded
+                                                },
+                                                colors = MenuDefaults.itemColors(
+                                                    textColor = MaterialTheme.colorScheme.tertiary
+                                                )
+                                            )
+                                            DropdownMenuItem(
+                                                text = { Text(text = "Delete Selected") },
+                                                modifier = Modifier
+                                                    .semantics { testTag = "Delete Selected button" },
+                                                onClick = {
+                                                    if (viewModel.selectedNotes.isNotEmpty()) {
+                                                        deleteSelectedAlertExpanded = !deleteSelectedAlertExpanded
+                                                    }
                                                 },
                                                 colors = MenuDefaults.itemColors(
                                                     textColor = MaterialTheme.colorScheme.tertiary
@@ -118,10 +142,75 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     ) {
+
+
+
                         Box(
                             modifier = Modifier.padding(it)
                         ){
-                            AppNavigation(viewModel)
+                            AppNavigation(viewModel, notificationWorker::scheduleNotification)
+                        }
+
+                        if (deleteSelectedAlertExpanded) {
+                            AlertDialog(
+                                onDismissRequest = { deleteSelectedAlertExpanded = !deleteSelectedAlertExpanded },
+                                title = {
+                                    Text("Delete Selected Notes")
+                                },
+                                text = {
+                                    Text("Are you sure you want to delete the selected notes?")
+                                },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            viewModel.deleteSelectedNotes()
+                                            deleteSelectedAlertExpanded = false
+                                        }
+                                    ) {
+                                        Text("Delete")
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = {
+                                            deleteSelectedAlertExpanded = false
+                                        }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
+                        }
+
+                        if (deleteAllAlertExpanded) {
+                            AlertDialog(
+                                onDismissRequest = { deleteAllAlertExpanded = !deleteAllAlertExpanded },
+                                title = {
+                                    Text("Delete All Notes")
+                                },
+                                text = {
+                                    Text("Are you sure you want to delete all notes?")
+                                },
+                                confirmButton = {
+                                    Button(
+                                        onClick = {
+                                            viewModel.deleteAllNotes()
+                                            deleteAllAlertExpanded = false
+                                        }
+                                    ) {
+                                        Text("Delete All")
+                                    }
+                                },
+                                dismissButton = {
+                                    Button(
+                                        onClick = {
+                                            deleteAllAlertExpanded = false
+                                        }
+                                    ) {
+                                        Text("Cancel")
+                                    }
+                                }
+                            )
                         }
                     }
                 }

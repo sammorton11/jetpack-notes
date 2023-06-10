@@ -3,6 +3,8 @@ package com.samm.room
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.samm.room.data.NoteDatabase
+import com.samm.room.domain.Notes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -14,7 +16,7 @@ class RepositoryIntegrationTests {
 
     private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val database = Room.inMemoryDatabaseBuilder(appContext, NoteDatabase::class.java).build()
-    private val repository = RepositoryImpl(database.dao())
+    private val repository = TestRepository(database.dao())
 
     @Test
     fun test_insert(): Unit = runBlocking {
