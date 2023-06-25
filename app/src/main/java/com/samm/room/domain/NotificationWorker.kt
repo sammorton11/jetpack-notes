@@ -14,8 +14,10 @@ import com.samm.room.R
 import kotlin.random.Random
 
 
-class NotificationWorker(private val context: Context, params: WorkerParameters) :
-    CoroutineWorker(context, params) {
+class NotificationWorker(
+    private val context: Context,
+    params: WorkerParameters
+) : CoroutineWorker(context, params) {
 
     private val CHANNEL_ID = "todo_app_channel"
     private val NOTIFICATION_ID = Random.nextInt()

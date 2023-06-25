@@ -67,7 +67,6 @@ class MainActivity : ComponentActivity() {
         viewModel.notesList()
         val notificationWorker = NotificationScheduler(this)
 
-
         setContent {
             RoomTheme {
                 Surface(
@@ -76,6 +75,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     var deleteSelectedAlertExpanded by remember { mutableStateOf(false) }
                     var deleteAllAlertExpanded by remember { mutableStateOf(false) }
+
 
                     Scaffold(
                         topBar = {
@@ -143,12 +143,14 @@ class MainActivity : ComponentActivity() {
                         }
                     ) {
 
-
-
                         Box(
                             modifier = Modifier.padding(it)
                         ){
-                            AppNavigation(viewModel, notificationWorker::scheduleNotification)
+                            AppNavigation(
+                                viewModel = viewModel,
+                                notificationWorker::scheduleNotification
+                            )
+
                         }
 
                         if (deleteSelectedAlertExpanded) {

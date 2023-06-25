@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -114,6 +115,15 @@ fun DetailsScreen(
             }
         }) {
             Text(text = "Update")
+        }
+
+        Button(
+            onClick = {
+                navController.popBackStack()
+            },
+            modifier = Modifier.testTag("Back Button")
+        ) {
+            Text(text = "Back")
         }
     }
 }
