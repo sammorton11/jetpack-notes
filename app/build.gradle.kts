@@ -87,5 +87,8 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation(kotlin("reflect"))
+
+    androidTestImplementation("androidx.navigation:navigation-testing:2.6.0")
 
 }

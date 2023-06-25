@@ -24,9 +24,11 @@ class RepositoryIntegrationTests {
         val emptyList = repository.getAllNotes().first()
         assert(emptyList.isEmpty())
 
-        repository.insert(Notes(0L, "", "", ""))
+        repository.deleteAllNotes()
+        repository.insert(Notes(0L, "Test", "", ""))
         val notesList = repository.getAllNotes().first()
         assert(notesList.isNotEmpty())
+        assert(notesList.first().title == "Test")
     }
 
     @Test

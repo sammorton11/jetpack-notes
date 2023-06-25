@@ -29,6 +29,7 @@ fun AppNavigation(
     ) {
 
         composable("notes-screen") {
+
             val list = viewModel.state.collectAsState().value.list
             val selectedNotes = viewModel.selectedNotes
 

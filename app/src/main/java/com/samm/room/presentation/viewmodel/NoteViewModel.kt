@@ -19,7 +19,6 @@ class NoteViewModel(private val repository: Repository): ViewModel() {
     private val _state = MutableStateFlow(NoteListScreenState())
     val state = _state.asStateFlow()
 
-
     private val _notes = mutableStateListOf<Notes>()
     val notes: List<Notes> get() = _notes
 
